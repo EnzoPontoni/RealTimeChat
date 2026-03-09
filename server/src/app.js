@@ -12,20 +12,46 @@ const setupSocketHandlers = require('./socket/socketHandler');
 const app = express();
 const httpServer = createServer(app);
 
+const DEFAULT_CLIENT_ORIGINS = [
+  'http://localhost:5173',
+  'https://pontonichats.vercel.app'
+];
+
+const parsedClientOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedOrigins = parsedClientOrigins.length > 0
+  ? parsedClientOrigins
+  : DEFAULT_CLIENT_ORIGINS;
+
+const corsOriginValidator = (origin, callback) => {
+  // Permite requisições sem Origin (health checks/server-to-server)
+  if (!origin) {
+    return callback(null, true);
+  }
+
+  if (allowedOrigins.includes(origin)) {
+    return callback(null, true);
+  }
+
+  return callback(new Error(`CORS bloqueado para origem: ${origin}`));
+};
+
+const corsOptions = {
+  origin: corsOriginValidator,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: true
+};
+
 // Configuração do Socket.io com CORS
 const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
+  cors: corsOptions
 });
 
 // Middlewares
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

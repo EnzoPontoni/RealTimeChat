@@ -12,7 +12,9 @@ export const useSocket = () => {
   return context;
 };
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+const PROD_SOCKET_URL = 'https://pontonischat-production.up.railway.app';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL
+  || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : PROD_SOCKET_URL);
 
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
