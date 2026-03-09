@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react';
 
 const MessageList = ({ messages, currentUserId, typingUsers }) => {
   const messagesEndRef = useRef(null);
-
-  // Auto-scroll para a última mensagem
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -33,8 +31,6 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
       });
     }
   };
-
-  // Agrupar mensagens por data
   const groupMessagesByDate = () => {
     const groups = {};
     messages.forEach((msg) => {
@@ -53,14 +49,11 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {Object.entries(messageGroups).map(([date, msgs]) => (
         <div key={date}>
-          {/* Separador de data */}
           <div className="flex items-center justify-center my-4">
             <div className="bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-400">
               {date}
             </div>
           </div>
-
-          {/* Mensagens do dia */}
           {msgs.map((message) => {
             const isOwnMessage = message.user.id === currentUserId;
 
@@ -95,8 +88,6 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
           })}
         </div>
       ))}
-
-      {/* Indicador de digitação */}
       {typingUsers.length > 0 && (
         <div className="flex justify-start mb-3 animate-fadeIn">
           <div className="bg-gray-700 text-gray-300 rounded-lg px-4 py-2 text-sm">

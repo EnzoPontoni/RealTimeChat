@@ -16,8 +16,6 @@ const Register = ({ switchToLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    // Validações
     if (!username || !email || !password || !confirmPassword) {
       setError('Preencha todos os campos');
       return;

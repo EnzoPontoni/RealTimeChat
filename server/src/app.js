@@ -27,7 +27,6 @@ const allowedOrigins = parsedClientOrigins.length > 0
   : DEFAULT_CLIENT_ORIGINS;
 
 const corsOriginValidator = (origin, callback) => {
-  // Permite requisições sem Origin (health checks/server-to-server)
   if (!origin) {
     return callback(null, true);
   }
@@ -44,36 +43,24 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true
 };
-
-// Configuração do Socket.io com CORS
 const io = new Server(httpServer, {
   cors: corsOptions
 });
-
-// Middlewares
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Logs de requisições em desenvolvimento
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     console.log(`${req.method} ${req.path}`);
     next();
   });
 }
-
-// Rotas da API REST
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/messages', messageRoutes);
-
-// Rota de health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
-
-// Rota raiz
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Real-Time Chat API',
@@ -86,16 +73,10 @@ app.get('/', (req, res) => {
     }
   });
 });
-
-// Configurar handlers do Socket.io
 setupSocketHandlers(io);
-
-// Handler de erro 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Rota não encontrada' });
 });
-
-// Handler de erro global
 app.use((err, req, res, next) => {
   console.error('Erro interno:', err);
   res.status(500).json({ 
@@ -103,8 +84,6 @@ app.use((err, req, res, next) => {
     message: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
-
-// Iniciar servidor
 const PORT = process.env.PORT || 3001;
 
 httpServer.listen(PORT, () => {
@@ -117,8 +96,6 @@ httpServer.listen(PORT, () => {
 ╚════════════════════════════════════════╝
   `);
 });
-
-// Tratamento de erros não capturados
 process.on('unhandledRejection', (error) => {
   console.error('❌ Unhandled Rejection:', error);
 });

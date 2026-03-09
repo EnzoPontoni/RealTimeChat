@@ -1,9 +1,6 @@
 const jwt = require('jsonwebtoken');
-
-// Middleware para verificar JWT em rotas protegidas
 const authMiddleware = (req, res, next) => {
   try {
-    // Buscar token do header Authorization
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -11,8 +8,6 @@ const authMiddleware = (req, res, next) => {
         error: 'Token não fornecido' 
       });
     }
-
-    // Formato esperado: "Bearer TOKEN"
     const parts = authHeader.split(' ');
 
     if (parts.length !== 2) {
@@ -28,16 +23,12 @@ const authMiddleware = (req, res, next) => {
         error: 'Token mal formatado' 
       });
     }
-
-    // Verificar token
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         return res.status(401).json({ 
           error: 'Token inválido ou expirado' 
         });
       }
-
-      // Adicionar dados do usuário à requisição
       req.user = decoded;
       next();
     });

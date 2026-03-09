@@ -16,8 +16,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Carregar dados do localStorage ao montar
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
@@ -25,7 +23,6 @@ export const AuthProvider = ({ children }) => {
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
-      // Verificar se o token ainda é válido
       verifyStoredToken(storedToken);
     } else {
       setLoading(false);
@@ -50,8 +47,6 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
 
       const data = await authAPI.login(email, password);
-      
-      // Salvar no estado e localStorage
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem('token', data.token);
@@ -73,8 +68,6 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
 
       const data = await authAPI.register(username, email, password);
-      
-      // Salvar no estado e localStorage
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem('token', data.token);

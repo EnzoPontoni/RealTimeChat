@@ -8,8 +8,6 @@ const {
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
-
-// Todas as rotas de sala requerem autenticação
 router.use(authMiddleware);
 
 router.get('/', getAllRooms);

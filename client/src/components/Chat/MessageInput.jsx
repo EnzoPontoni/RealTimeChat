@@ -7,26 +7,19 @@ const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled }) => {
   const typingTimeoutRef = useRef(null);
 
   useEffect(() => {
-    // Focar no input ao montar
     inputRef.current?.focus();
   }, []);
 
   const handleChange = (e) => {
     const value = e.target.value;
     setMessage(value);
-
-    // Indicador de digitação
     if (value.trim() && !isTyping) {
       setIsTyping(true);
       onTyping();
     }
-
-    // Reset do timeout de digitação
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-
-    // Se parar de digitar por 2 segundos
     typingTimeoutRef.current = setTimeout(() => {
       if (isTyping) {
         setIsTyping(false);
@@ -44,8 +37,6 @@ const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled }) => {
 
     onSendMessage(message);
     setMessage('');
-    
-    // Parar indicador de digitação
     if (isTyping) {
       setIsTyping(false);
       onStopTyping();
@@ -54,13 +45,10 @@ const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled }) => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-
-    // Focar novamente no input
     inputRef.current?.focus();
   };
 
   const handleKeyDown = (e) => {
-    // Enter sem Shift para enviar
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);

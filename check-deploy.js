@@ -1,5 +1,3 @@
-// ✅ Script de Verificação Pré-Deploy
-// Execute: node check-deploy.js
 
 const fs = require('fs');
 const path = require('path');
@@ -8,8 +6,6 @@ console.log('\n🔍 Verificando configurações de deploy...\n');
 
 let errors = 0;
 let warnings = 0;
-
-// Verificar estrutura de arquivos
 console.log('📁 Verificando estrutura de arquivos...');
 
 const requiredFiles = [
@@ -31,8 +27,6 @@ requiredFiles.forEach(file => {
     errors++;
   }
 });
-
-// Verificar .env do servidor
 console.log('\n🔐 Verificando variáveis de ambiente do servidor...');
 
 if (fs.existsSync('server/.env')) {
@@ -54,8 +48,6 @@ if (fs.existsSync('server/.env')) {
       warnings++;
     }
   });
-
-  // Verificar se DATABASE_URL está configurado corretamente
   if (serverEnv.includes('DATABASE_URL')) {
     if (serverEnv.includes('postgres://c21c7d3f038722b9467612bab53cd0e7c7b5c28f255906834292bc8d35d56a99')) {
       console.log('   ✅ DATABASE_URL do Prisma Database configurado');
@@ -71,8 +63,6 @@ if (fs.existsSync('server/.env')) {
   console.log('   ❌ server/.env NÃO EXISTE - copie de .env.example');
   errors++;
 }
-
-// Verificar .env do cliente
 console.log('\n🌐 Verificando variáveis de ambiente do cliente...');
 
 if (fs.existsSync('client/.env')) {
@@ -96,8 +86,6 @@ if (fs.existsSync('client/.env')) {
   console.log('   ❌ client/.env NÃO EXISTE - copie de .env.example');
   errors++;
 }
-
-// Verificar node_modules
 console.log('\n📦 Verificando dependências...');
 
 if (fs.existsSync('server/node_modules')) {
@@ -115,8 +103,6 @@ if (fs.existsSync('client/node_modules')) {
   console.log('      Execute: cd client && npm install');
   warnings++;
 }
-
-// Verificar Prisma
 console.log('\n🗄️  Verificando Prisma...');
 
 if (fs.existsSync('server/node_modules/@prisma/client')) {
@@ -129,7 +115,7 @@ if (fs.existsSync('server/node_modules/@prisma/client')) {
 
 if (fs.existsSync('server/prisma/migrations')) {
   const migrations = fs.readdirSync('server/prisma/migrations');
-  if (migrations.length > 1) { // > 1 porque tem .gitkeep ou migration_lock
+  if (migrations.length > 1) {
     console.log(`   ✅ Migrations criadas (${migrations.length - 1} migration(s))`);
   } else {
     console.log('   ⚠️  Nenhuma migration encontrada');
@@ -140,8 +126,6 @@ if (fs.existsSync('server/prisma/migrations')) {
   console.log('   ⚠️  Pasta de migrations não existe');
   warnings++;
 }
-
-// Verificar vercel.json
 console.log('\n☁️  Verificando configuração Vercel...');
 
 if (fs.existsSync('client/vercel.json')) {
@@ -156,8 +140,6 @@ if (fs.existsSync('client/vercel.json')) {
   console.log('   ❌ client/vercel.json não encontrado');
   errors++;
 }
-
-// Verificar .gitignore
 console.log('\n🙈 Verificando .gitignore...');
 
 if (fs.existsSync('.gitignore')) {
@@ -172,8 +154,6 @@ if (fs.existsSync('.gitignore')) {
   console.log('   ⚠️  .gitignore não encontrado');
   warnings++;
 }
-
-// Resumo final
 console.log('\n' + '='.repeat(50));
 console.log('📊 RESUMO DA VERIFICAÇÃO');
 console.log('='.repeat(50));
@@ -198,6 +178,4 @@ if (errors === 0 && warnings === 0) {
 }
 
 console.log('='.repeat(50) + '\n');
-
-// Exit com código de erro se houver problemas críticos
 process.exit(errors > 0 ? 1 : 0);

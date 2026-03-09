@@ -1,6 +1,4 @@
 const prisma = require('../utils/prisma');
-
-// Listar todas as salas
 const getAllRooms = async (req, res) => {
   try {
     const rooms = await prisma.room.findMany({
@@ -23,8 +21,6 @@ const getAllRooms = async (req, res) => {
     });
   }
 };
-
-// Buscar uma sala específica
 const getRoomById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,20 +49,14 @@ const getRoomById = async (req, res) => {
     });
   }
 };
-
-// Criar nova sala
 const createRoom = async (req, res) => {
   try {
     const { name, description } = req.body;
-
-    // Validação
     if (!name || name.trim().length === 0) {
       return res.status(400).json({ 
         error: 'Nome da sala é obrigatório' 
       });
     }
-
-    // Verificar se já existe
     const existingRoom = await prisma.room.findUnique({
       where: { name: name.trim() }
     });
@@ -76,8 +66,6 @@ const createRoom = async (req, res) => {
         error: 'Já existe uma sala com este nome' 
       });
     }
-
-    // Criar sala
     const room = await prisma.room.create({
       data: {
         name: name.trim(),
@@ -94,18 +82,12 @@ const createRoom = async (req, res) => {
     });
   }
 };
-
-// Deletar sala (opcional, pode ser útil)
 const deleteRoom = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Deletar mensagens primeiro (cascade)
     await prisma.message.deleteMany({
       where: { roomId: id }
     });
-
-    // Deletar sala
     await prisma.room.delete({
       where: { id }
     });

@@ -1,7 +1,4 @@
 const { PrismaClient } = require('@prisma/client');
-
-// Prisma Client Singleton para evitar múltiplas instâncias
-// Especialmente importante em ambientes serverless
 const prismaClientSingleton = () => {
   return new PrismaClient();
 };

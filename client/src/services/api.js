@@ -3,16 +3,12 @@ import axios from 'axios';
 const PROD_API_URL = 'https://pontonischat-production.up.railway.app';
 const API_URL = import.meta.env.VITE_API_URL
   || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : PROD_API_URL);
-
-// Instância do axios com configurações padrão
 const api = axios.create({
   baseURL: `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
-// Interceptor para adicionar token em todas as requisições
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -25,13 +21,10 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-// Interceptor para tratar erros de autenticação
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token inválido ou expirado
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/auth';
@@ -39,8 +32,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// ============ AUTH ENDPOINTS ============
 
 export const authAPI = {
   register: async (username, email, password) => {
@@ -66,8 +57,6 @@ export const authAPI = {
   },
 };
 
-// ============ ROOM ENDPOINTS ============
-
 export const roomAPI = {
   getAllRooms: async () => {
     const response = await api.get('/rooms');
@@ -92,8 +81,6 @@ export const roomAPI = {
     return response.data;
   },
 };
-
-// ============ MESSAGE ENDPOINTS ============
 
 export const messageAPI = {
   getRoomMessages: async (roomId) => {

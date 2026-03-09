@@ -21,7 +21,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Header */}
       <header className="bg-gray-800 border-b border-gray-700">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div>
@@ -38,16 +37,12 @@ const Home = () => {
           </button>
         </div>
       </header>
-
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <RoomList
           key={refreshKey}
           onCreateRoom={() => setShowCreateModal(true)}
         />
       </main>
-
-      {/* Modal de criação de sala */}
       {showCreateModal && (
         <CreateRoomModal
           onClose={() => setShowCreateModal(false)}

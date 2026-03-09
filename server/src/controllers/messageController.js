@@ -1,11 +1,7 @@
 const prisma = require('../utils/prisma');
-
-// Buscar histórico de mensagens de uma sala (últimas 50)
 const getRoomMessages = async (req, res) => {
   try {
     const { roomId } = req.params;
-
-    // Verificar se a sala existe
     const room = await prisma.room.findUnique({
       where: { id: roomId }
     });
@@ -15,8 +11,6 @@ const getRoomMessages = async (req, res) => {
         error: 'Sala não encontrada' 
       });
     }
-
-    // Buscar últimas 50 mensagens
     const messages = await prisma.message.findMany({
       where: { roomId },
       take: 50,
@@ -42,14 +36,10 @@ const getRoomMessages = async (req, res) => {
     });
   }
 };
-
-// Criar mensagem (usado via Socket.io, mas pode ser útil ter REST também)
 const createMessage = async (req, res) => {
   try {
     const { roomId, content } = req.body;
     const userId = req.user.userId;
-
-    // Validação
     if (!content || content.trim().length === 0) {
       return res.status(400).json({ 
         error: 'Conteúdo da mensagem é obrigatório' 
@@ -61,8 +51,6 @@ const createMessage = async (req, res) => {
         error: 'ID da sala é obrigatório' 
       });
     }
-
-    // Verificar se a sala existe
     const room = await prisma.room.findUnique({
       where: { id: roomId }
     });
@@ -72,8 +60,6 @@ const createMessage = async (req, res) => {
         error: 'Sala não encontrada' 
       });
     }
-
-    // Criar mensagem
     const message = await prisma.message.create({
       data: {
         content: content.trim(),

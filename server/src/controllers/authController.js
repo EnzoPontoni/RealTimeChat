@@ -1,13 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../utils/prisma');
-
-// Registrar novo usuário
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
-    // Validação básica
     if (!username || !email || !password) {
       return res.status(400).json({ 
         error: 'Todos os campos são obrigatórios' 
@@ -19,8 +15,6 @@ const register = async (req, res) => {
         error: 'A senha deve ter pelo menos 6 caracteres' 
       });
     }
-
-    // Verificar se usuário já existe
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
@@ -35,11 +29,7 @@ const register = async (req, res) => {
         error: 'Usuário ou email já cadastrado' 
       });
     }
-
-    // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Criar usuário
     const user = await prisma.user.create({
       data: {
         username,
@@ -53,8 +43,6 @@ const register = async (req, res) => {
         createdAt: true
       }
     });
-
-    // Gerar token JWT
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       process.env.JWT_SECRET,
@@ -73,20 +61,14 @@ const register = async (req, res) => {
     });
   }
 };
-
-// Login de usuário
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Validação básica
     if (!email || !password) {
       return res.status(400).json({ 
         error: 'Email e senha são obrigatórios' 
       });
     }
-
-    // Buscar usuário
     const user = await prisma.user.findUnique({
       where: { email }
     });
@@ -96,8 +78,6 @@ const login = async (req, res) => {
         error: 'Credenciais inválidas' 
       });
     }
-
-    // Verificar senha
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
@@ -105,8 +85,6 @@ const login = async (req, res) => {
         error: 'Credenciais inválidas' 
       });
     }
-
-    // Gerar token JWT
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       process.env.JWT_SECRET,
@@ -130,11 +108,8 @@ const login = async (req, res) => {
     });
   }
 };
-
-// Verificar token e retornar dados do usuário
 const verifyToken = async (req, res) => {
   try {
-    // req.user foi adicionado pelo middleware de autenticação
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
       select: {

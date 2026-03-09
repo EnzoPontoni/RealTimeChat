@@ -25,8 +25,6 @@ const ChatRoom = () => {
 
   const [room, setRoom] = useState(null);
   const [loadingRoom, setLoadingRoom] = useState(true);
-
-  // Carregar informações da sala
   useEffect(() => {
     const loadRoom = async () => {
       try {
@@ -72,7 +70,6 @@ const ChatRoom = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-900">
-      {/* Header */}
       <div className="bg-gray-800 border-b border-gray-700 px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
@@ -102,7 +99,6 @@ const ChatRoom = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Status de conexão */}
           <div className="flex items-center gap-2">
             <div
               className={`w-2 h-2 rounded-full ${
@@ -113,17 +109,12 @@ const ChatRoom = () => {
               {connected ? 'Conectado' : 'Desconectado'}
             </span>
           </div>
-
-          {/* Usuários online (mobile) */}
           <div className="lg:hidden text-sm text-gray-400">
             {users.length} online
           </div>
         </div>
       </div>
-
-      {/* Container principal */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Área de mensagens */}
         <div className="flex flex-col flex-1">
           {loading ? (
             <div className="flex items-center justify-center flex-1">
@@ -151,8 +142,6 @@ const ChatRoom = () => {
             </>
           )}
         </div>
-
-        {/* Lista de usuários (desktop) */}
         <UserList users={users} currentUserId={user?.id} />
       </div>
     </div>

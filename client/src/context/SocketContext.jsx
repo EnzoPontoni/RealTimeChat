@@ -22,7 +22,6 @@ export const SocketProvider = ({ children }) => {
   const { token, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    // Só conectar se estiver autenticado
     if (!isAuthenticated || !token) {
       if (socket) {
         socket.disconnect();
@@ -31,8 +30,6 @@ export const SocketProvider = ({ children }) => {
       }
       return;
     }
-
-    // Criar conexão Socket.io
     const newSocket = io(SOCKET_URL, {
       auth: {
         token: token,
@@ -41,8 +38,6 @@ export const SocketProvider = ({ children }) => {
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
     });
-
-    // Eventos de conexão
     newSocket.on('connect', () => {
       console.log('✅ Socket conectado:', newSocket.id);
       setConnected(true);
@@ -63,8 +58,6 @@ export const SocketProvider = ({ children }) => {
     });
 
     setSocket(newSocket);
-
-    // Cleanup ao desmontar
     return () => {
       if (newSocket) {
         newSocket.disconnect();

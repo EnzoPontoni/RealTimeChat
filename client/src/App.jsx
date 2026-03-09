@@ -5,8 +5,6 @@ import { useAuth } from './hooks/useAuth';
 import Home from './pages/Home';
 import ChatPage from './pages/ChatPage';
 import AuthPage from './pages/AuthPage';
-
-// Componente para rotas protegidas
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
@@ -20,8 +18,6 @@ const ProtectedRoute = ({ children }) => {
 
   return isAuthenticated ? children : <Navigate to="/auth" replace />;
 };
-
-// Componente para rota pública (redireciona se já autenticado)
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
@@ -39,7 +35,6 @@ const PublicRoute = ({ children }) => {
 function AppRoutes() {
   return (
     <Routes>
-      {/* Rotas públicas */}
       <Route
         path="/auth"
         element={
@@ -48,8 +43,6 @@ function AppRoutes() {
           </PublicRoute>
         }
       />
-
-      {/* Rotas protegidas */}
       <Route
         path="/"
         element={
@@ -66,8 +59,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
-      {/* Rota 404 */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
