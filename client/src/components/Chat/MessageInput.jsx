@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled }) => {
+const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled, typingUsers = [] }) => {
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const inputRef = useRef(null);
@@ -56,29 +56,54 @@ const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled }) => {
   };
 
   return (
-    <div className="border-t border-gray-700 p-4 bg-gray-800">
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <input
-          ref={inputRef}
-          type="text"
-          value={message}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder={disabled ? 'Conectando...' : 'Digite sua mensagem...'}
-          disabled={disabled}
-          className="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
-        />
+    <div className="px-6 py-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <form onSubmit={handleSubmit} className="flex items-center gap-3">
+        <div className="flex-1 flex items-center gap-3 bg-[var(--bg-card)] rounded-full px-5 py-3">
+          <input
+            ref={inputRef}
+            type="text"
+            value={message}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            placeholder={disabled ? 'Conectando...' : 'Type a message...'}
+            disabled={disabled}
+            className="flex-1 bg-transparent text-white placeholder-[var(--text-secondary)] focus:outline-none text-[15px]"
+          />
+          <button
+            type="button"
+            className="text-[var(--text-secondary)] hover:text-white transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="text-[var(--text-secondary)] hover:text-white transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+            </svg>
+          </button>
+        </div>
         <button
           type="submit"
           disabled={disabled || !message.trim()}
-          className="bg-primary-600 hover:bg-primary-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200"
+          className="bg-[var(--accent-purple)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-full p-3 transition-all shadow-lg"
         >
-          Enviar
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
         </button>
       </form>
-      <p className="text-xs text-gray-500 mt-2">
-        Pressione Enter para enviar
-      </p>
+      {isTyping && (
+        <div className="flex items-center gap-2 mt-3 text-sm">
+          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          <span className="text-[var(--accent-cyan)] font-medium">
+            {typingUsers.length > 0 ? `${typingUsers[0]} is typing...` : 'Someone is typing...'}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

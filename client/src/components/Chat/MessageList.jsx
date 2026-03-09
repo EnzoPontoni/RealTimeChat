@@ -21,16 +21,14 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
     yesterday.setDate(yesterday.getDate() - 1);
 
     if (date.toDateString() === today.toDateString()) {
-      return 'Hoje';
+      return 'Today, ' + date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return 'Ontem';
+      return 'Yesterday';
     } else {
-      return date.toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-      });
+      return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
     }
   };
+
   const groupMessagesByDate = () => {
     const groups = {};
     messages.forEach((msg) => {
@@ -46,11 +44,11 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
   const messageGroups = groupMessagesByDate();
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex-1 overflow-y-auto px-6 py-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {Object.entries(messageGroups).map(([date, msgs]) => (
         <div key={date}>
-          <div className="flex items-center justify-center my-4">
-            <div className="bg-gray-700 px-3 py-1 rounded-full text-xs text-gray-400">
+          <div className="flex items-center justify-center my-6">
+            <div className="bg-[var(--bg-card)] px-4 py-1.5 rounded-full text-xs text-[var(--text-secondary)] font-medium">
               {date}
             </div>
           </div>
@@ -60,28 +58,45 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
             return (
               <div
                 key={message.id}
-                className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-3 animate-fadeIn`}
+                className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-4 animate-fadeIn`}
               >
-                <div
-                  className={`max-w-xs lg:max-w-md ${
-                    isOwnMessage
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-700 text-gray-100'
-                  } rounded-lg px-4 py-2 shadow-lg`}
-                >
+                <div className={`flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end gap-2 max-w-[65%]`}>
                   {!isOwnMessage && (
-                    <div className="text-xs font-semibold text-primary-300 mb-1">
-                      {message.user.username}
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
+                      {message.user.username.charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <div className="break-words">{message.content}</div>
-                  <div
-                    className={`text-xs mt-1 ${
-                      isOwnMessage ? 'text-primary-200' : 'text-gray-400'
-                    }`}
-                  >
-                    {formatTime(message.createdAt)}
+                  
+                  <div className="flex flex-col" style={{ maxWidth: '100%' }}>
+                    <div className={`flex items-center gap-2 mb-1 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
+                      <span className="text-xs text-[var(--text-secondary)]">
+                        {!isOwnMessage && `${message.user.username} • `}
+                        {formatTime(message.createdAt)}
+                        {isOwnMessage && ' • You'}
+                      </span>
+                      {isOwnMessage && (
+                        <svg className="w-3 h-3 text-[var(--text-secondary)]" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                        </svg>
+                      )}
+                    </div>
+                    
+                    <div
+                      className={`px-4 py-3 shadow-md ${
+                        isOwnMessage
+                          ? 'bg-[var(--accent-cyan)] text-gray-900 rounded-[18px] rounded-br-md'
+                          : 'bg-[var(--bg-card)] text-white rounded-[18px] rounded-bl-md'
+                      }`}
+                    >
+                      <div className="break-words text-[15px] leading-relaxed">{message.content}</div>
+                    </div>
                   </div>
+
+                  {isOwnMessage && (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
+                      {message.user.username.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -90,13 +105,13 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
       ))}
       {typingUsers.length > 0 && (
         <div className="flex justify-start mb-3 animate-fadeIn">
-          <div className="bg-gray-700 text-gray-300 rounded-lg px-4 py-2 text-sm">
+          <div className="bg-[var(--bg-card)] text-gray-300 rounded-lg px-4 py-2 text-sm">
             <span className="font-semibold">{typingUsers.join(', ')}</span>
             {typingUsers.length === 1 ? ' está digitando' : ' estão digitando'}
             <span className="inline-flex ml-1">
-              <span className="animate-bounce">.</span>
-              <span className="animate-bounce delay-100">.</span>
-              <span className="animate-bounce delay-200">.</span>
+              <span className="animate-bounce-dot inline-block">.</span>
+              <span className="animate-bounce-dot inline-block">.</span>
+              <span className="animate-bounce-dot inline-block">.</span>
             </span>
           </div>
         </div>

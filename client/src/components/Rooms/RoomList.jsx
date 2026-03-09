@@ -58,7 +58,7 @@ const RoomList = ({ onCreateRoom }) => {
         <h2 className="text-2xl font-bold text-white">Salas disponíveis</h2>
         <button
           onClick={onCreateRoom}
-          className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
+          className="bg-[var(--accent-purple)] hover:opacity-90 text-white font-semibold py-2.5 px-5 rounded-xl transition-all shadow-lg"
         >
           + Nova Sala
         </button>
@@ -66,10 +66,10 @@ const RoomList = ({ onCreateRoom }) => {
 
       {rooms.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-400 mb-4">Nenhuma sala criada ainda</p>
+          <p className="text-[var(--text-secondary)] mb-4">Nenhuma sala criada ainda</p>
           <button
             onClick={onCreateRoom}
-            className="text-primary-500 hover:text-primary-400 underline"
+            className="text-[var(--accent-cyan)] hover:underline font-medium"
           >
             Criar a primeira sala
           </button>
@@ -80,22 +80,32 @@ const RoomList = ({ onCreateRoom }) => {
             <div
               key={room.id}
               onClick={() => handleRoomClick(room.id)}
-              className="bg-gray-800 hover:bg-gray-750 border border-gray-700 rounded-lg p-6 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg animate-fadeIn"
+              className="bg-[var(--bg-card)] hover:bg-[var(--bg-hover)] rounded-xl p-6 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-xl animate-fadeIn"
             >
-              <h3 className="text-xl font-semibold text-white mb-2">
-                {room.name}
-              </h3>
-              {room.description && (
-                <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-                  {room.description}
-                </p>
-              )}
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                  {room.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-white mb-1 truncate">
+                    {room.name}
+                  </h3>
+                  {room.description && (
+                    <p className="text-[var(--text-secondary)] text-sm line-clamp-2">
+                      {room.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-sm pt-3 border-t border-[var(--bg-primary)]">
+                <span className="text-[var(--text-secondary)]">
                   {room._count?.messages || 0} mensagens
                 </span>
-                <span className="text-primary-500 font-medium">
-                  Entrar →
+                <span className="text-[var(--accent-cyan)] font-semibold flex items-center gap-1">
+                  Entrar
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
                 </span>
               </div>
             </div>
