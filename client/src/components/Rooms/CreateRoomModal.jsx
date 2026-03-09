@@ -27,7 +27,6 @@ const CreateRoomModal = ({ onClose, onRoomCreated }) => {
       onRoomCreated(data.room);
       onClose();
     } catch (err) {
-      console.error('Erro ao criar sala:', err);
       setError(err.response?.data?.error || 'Erro ao criar sala');
     } finally {
       setLoading(false);

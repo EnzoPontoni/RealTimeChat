@@ -49,12 +49,12 @@ const Register = ({ switchToLogin }) => {
 
   return (
     <div className="w-full max-w-md animate-fadeIn">
-      <div className="bg-gray-800 rounded-lg shadow-xl p-8">
+      <div className="rounded-2xl shadow-2xl p-8" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-white mb-2">
             Criar conta
           </h2>
-          <p className="text-gray-400">
+          <p className="text-[var(--text-secondary)]">
             Junte-se à conversa em tempo real
           </p>
         </div>
@@ -67,7 +67,7 @@ const Register = ({ switchToLogin }) => {
           )}
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="username" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Username
             </label>
             <input
@@ -75,14 +75,14 @@ const Register = ({ switchToLogin }) => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-[var(--bg-card)] border border-[var(--bg-hover)] rounded-xl text-white placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-purple)] focus:border-transparent"
               placeholder="seunome"
               disabled={loading}
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Email
             </label>
             <input
@@ -90,14 +90,14 @@ const Register = ({ switchToLogin }) => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-[var(--bg-card)] border border-[var(--bg-hover)] rounded-xl text-white placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-purple)] focus:border-transparent"
               placeholder="seu@email.com"
               disabled={loading}
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Senha
             </label>
             <input
@@ -105,14 +105,14 @@ const Register = ({ switchToLogin }) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-[var(--bg-card)] border border-[var(--bg-hover)] rounded-xl text-white placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-purple)] focus:border-transparent"
               placeholder="••••••••"
               disabled={loading}
             />
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Confirmar Senha
             </label>
             <input
@@ -120,7 +120,7 @@ const Register = ({ switchToLogin }) => {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-[var(--bg-card)] border border-[var(--bg-hover)] rounded-xl text-white placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-purple)] focus:border-transparent"
               placeholder="••••••••"
               disabled={loading}
             />
@@ -129,18 +129,18 @@ const Register = ({ switchToLogin }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
+            className="w-full bg-[var(--accent-purple)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg"
           >
             {loading ? 'Criando conta...' : 'Criar conta'}
           </button>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-400">
+          <p className="text-[var(--text-secondary)]">
             Já tem uma conta?{' '}
             <button
               onClick={switchToLogin}
-              className="text-primary-500 hover:text-primary-400 font-semibold"
+              className="text-[var(--accent-cyan)] hover:opacity-80 font-semibold"
             >
               Entrar
             </button>

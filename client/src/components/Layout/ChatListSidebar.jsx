@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { roomAPI } from '../../services/api';
 
-const ChatListSidebar = () => {
+const ChatListSidebar = ({ onRoomOpen }) => {
   const [rooms, setRooms] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
   const navigate = useNavigate();
@@ -17,12 +17,14 @@ const ChatListSidebar = () => {
       const data = await roomAPI.getAllRooms();
       setRooms(data.rooms);
     } catch (err) {
-      console.error('Erro ao carregar salas:', err);
-    }
+      }
   };
 
   const handleRoomClick = (room) => {
     navigate(`/chat/${room.id}`);
+    if (onRoomOpen) {
+      onRoomOpen();
+    }
   };
 
   const formatTime = (timestamp) => {
@@ -37,8 +39,8 @@ const ChatListSidebar = () => {
   };
 
   return (
-    <div className="flex-1 bg-[var(--bg-primary)] flex flex-col">
-      <div className="px-6 py-4 flex items-center justify-between border-b border-[var(--bg-card)]">
+    <div className="flex-1 bg-[var(--bg-primary)] flex flex-col min-h-0">
+      <div className="px-6 py-4 flex items-center justify-between border-b border-[var(--bg-card)] md:sticky md:top-0 bg-[var(--bg-primary)] z-10">
         <h2 className="text-xl font-bold text-white">Chats</h2>
         <div className="flex items-center gap-2">
           <button className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--bg-card)] transition-colors">
@@ -110,16 +112,18 @@ const ChatListSidebar = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2">
+      <div className="flex-1 overflow-y-auto px-2 pb-3">
         {rooms.map((room) => {
           const isActive = room.id === parseInt(roomId);
           const lastMessage = room.description || 'Sem mensagens ainda...';
+          const unreadCount = Math.min(room._count?.messages || 0, 9);
+          const showUnread = !isActive && unreadCount > 0;
           
           return (
             <div
               key={room.id}
               onClick={() => handleRoomClick(room)}
-              className={`flex items-center gap-3 px-4 py-3 mx-2 mb-1 rounded-xl cursor-pointer transition-all ${
+              className={`flex items-center gap-3 px-4 py-3 mx-2 mb-1 rounded-xl cursor-pointer transition-all min-h-[56px] ${
                 isActive
                   ? 'bg-[var(--bg-card)]'
                   : 'hover:bg-[var(--bg-card)]'
@@ -129,9 +133,7 @@ const ChatListSidebar = () => {
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg">
                   {room.name.charAt(0).toUpperCase()}
                 </div>
-                {Math.random() > 0.5 && (
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[var(--bg-primary)]"></div>
-                )}
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[var(--bg-primary)]"></div>
               </div>
               
               <div className="flex-1 min-w-0">
@@ -146,10 +148,10 @@ const ChatListSidebar = () => {
                 </p>
               </div>
 
-              {Math.random() > 0.7 && (
-                <div className="w-5 h-5 bg-[var(--badge-orange)] rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-semibold">
-                    {Math.floor(Math.random() * 9) + 1}
+              {showUnread && (
+                <div className="h-5 min-w-[20px] px-1 bg-[var(--badge-orange)] rounded-full flex items-center justify-center">
+                  <span className="text-white text-[11px] font-semibold">
+                    {unreadCount}
                   </span>
                 </div>
               )}

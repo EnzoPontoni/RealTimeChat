@@ -30,7 +30,6 @@ const getRoomMessages = async (req, res) => {
     res.json({ messages });
 
   } catch (error) {
-    console.error('Erro ao buscar mensagens:', error);
     res.status(500).json({ 
       error: 'Erro ao buscar mensagens' 
     });
@@ -43,6 +42,12 @@ const createMessage = async (req, res) => {
     if (!content || content.trim().length === 0) {
       return res.status(400).json({ 
         error: 'Conteúdo da mensagem é obrigatório' 
+      });
+    }
+
+    if (content.length > 2000) {
+      return res.status(400).json({ 
+        error: 'Mensagem muito longa (máximo 2000 caracteres)' 
       });
     }
 
@@ -79,7 +84,6 @@ const createMessage = async (req, res) => {
     res.status(201).json({ message });
 
   } catch (error) {
-    console.error('Erro ao criar mensagem:', error);
     res.status(500).json({ 
       error: 'Erro ao criar mensagem' 
     });

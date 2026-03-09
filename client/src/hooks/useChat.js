@@ -15,27 +15,21 @@ export const useChat = (roomId) => {
       return;
     }
 
-    console.log('🚪 Entrando na sala:', roomId);
     socket.emit('join_room', { roomId });
     const handleMessageHistory = (historyMessages) => {
-      console.log('📜 Histórico recebido:', historyMessages.length, 'mensagens');
       setMessages(historyMessages);
       setLoading(false);
     };
     const handleReceiveMessage = (message) => {
-      console.log('💬 Nova mensagem:', message);
       setMessages((prev) => [...prev, message]);
     };
     const handleRoomUsers = (roomUsers) => {
-      console.log('👥 Usuários na sala:', roomUsers);
       setUsers(roomUsers);
     };
     const handleUserJoined = ({ username }) => {
-      console.log('👋 Usuário entrou:', username);
-    };
+      };
     const handleUserLeft = ({ username }) => {
-      console.log('🚪 Usuário saiu:', username);
-    };
+      };
     const handleUserTyping = ({ username }) => {
       setTypingUsers((prev) => {
         if (!prev.includes(username)) {
@@ -48,7 +42,6 @@ export const useChat = (roomId) => {
       setTypingUsers((prev) => prev.filter((u) => u !== username));
     };
     const handleError = ({ message }) => {
-      console.error('❌ Erro do socket:', message);
       setError(message);
     };
     socket.on('message_history', handleMessageHistory);
@@ -60,7 +53,6 @@ export const useChat = (roomId) => {
     socket.on('user_stop_typing', handleUserStopTyping);
     socket.on('error', handleError);
     return () => {
-      console.log('🚪 Saindo da sala:', roomId);
       socket.emit('leave_room', { roomId });
       
       socket.off('message_history', handleMessageHistory);

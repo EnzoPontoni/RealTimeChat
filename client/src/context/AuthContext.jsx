@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
       setLoading(false);
     } catch (err) {
-      console.error('Token inválido:', err);
+
       logout();
       setLoading(false);
     }

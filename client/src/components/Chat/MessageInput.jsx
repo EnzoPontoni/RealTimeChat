@@ -56,9 +56,9 @@ const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled, typingU
   };
 
   return (
-    <div className="px-6 py-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="px-6 py-4 border-t border-[var(--bg-card)]" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <form onSubmit={handleSubmit} className="flex items-center gap-3">
-        <div className="flex-1 flex items-center gap-3 bg-[var(--bg-card)] rounded-full px-5 py-3">
+        <div className="flex-1 flex items-center gap-3 bg-[var(--bg-card)] rounded-full px-5 py-3 min-h-[48px]">
           <input
             ref={inputRef}
             type="text"
@@ -89,18 +89,18 @@ const MessageInput = ({ onSendMessage, onTyping, onStopTyping, disabled, typingU
         <button
           type="submit"
           disabled={disabled || !message.trim()}
-          className="bg-[var(--accent-purple)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-full p-3 transition-all shadow-lg"
+          className="bg-[var(--accent-purple)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-full p-3 transition-all shadow-lg min-w-[48px] min-h-[48px]"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
           </svg>
         </button>
       </form>
-      {isTyping && (
+      {typingUsers.length > 0 && (
         <div className="flex items-center gap-2 mt-3 text-sm">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
           <span className="text-[var(--accent-cyan)] font-medium">
-            {typingUsers.length > 0 ? `${typingUsers[0]} is typing...` : 'Someone is typing...'}
+            {`${typingUsers[0]} is typing...`}
           </span>
         </div>
       )}

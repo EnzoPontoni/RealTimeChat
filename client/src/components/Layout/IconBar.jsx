@@ -1,7 +1,7 @@
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
-const IconBar = ({ currentView, onViewChange }) => {
+const IconBar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 

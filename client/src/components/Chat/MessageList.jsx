@@ -43,6 +43,28 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
 
   const messageGroups = groupMessagesByDate();
 
+  const renderMessageContent = (content) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = content.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (urlRegex.test(part)) {
+        return (
+          <a
+            key={`${part}-${index}`}
+            href={part}
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-400 underline break-all"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={`${part}-${index}`}>{part}</span>;
+    });
+  };
+
   return (
     <div className="flex-1 overflow-y-auto px-6 py-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {Object.entries(messageGroups).map(([date, msgs]) => (
@@ -60,7 +82,7 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
                 key={message.id}
                 className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-4 animate-fadeIn`}
               >
-                <div className={`flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end gap-2 max-w-[65%]`}>
+                <div className={`flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end gap-2 max-w-[85%] md:max-w-[65%]`}>
                   {!isOwnMessage && (
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
                       {message.user.username.charAt(0).toUpperCase()}
@@ -88,7 +110,9 @@ const MessageList = ({ messages, currentUserId, typingUsers }) => {
                           : 'bg-[var(--bg-card)] text-white rounded-[18px] rounded-bl-md'
                       }`}
                     >
-                      <div className="break-words text-[15px] leading-relaxed">{message.content}</div>
+                      <div className="break-words text-[15px] leading-relaxed whitespace-pre-wrap">
+                        {renderMessageContent(message.content)}
+                      </div>
                     </div>
                   </div>
 

@@ -20,7 +20,6 @@ function setupSocketHandlers(io) {
   });
 
   io.on('connection', (socket) => {
-    console.log(`✅ Usuário conectado: ${socket.username} (${socket.id})`);
     socket.on('join_room', async ({ roomId }) => {
       try {
         const room = await prisma.room.findUnique({
@@ -39,7 +38,6 @@ function setupSocketHandlers(io) {
           socket.username
         );
 
-        console.log(`👤 ${socket.username} entrou na sala: ${room.name}`);
         const messages = await prisma.message.findMany({
           where: { roomId },
           take: 50,
@@ -57,7 +55,6 @@ function setupSocketHandlers(io) {
         io.to(roomId).emit('room_users', roomUsers);
 
       } catch (error) {
-        console.error('Erro ao entrar na sala:', error);
         socket.emit('error', { message: 'Erro ao entrar na sala' });
       }
     });
@@ -68,7 +65,6 @@ function setupSocketHandlers(io) {
         const result = roomManager.leaveCurrentRoom(socket.id);
         
         if (result) {
-          console.log(`👋 ${result.username} saiu da sala: ${result.roomId}`);
           socket.to(result.roomId).emit('user_left', { 
             username: result.username 
           });
@@ -77,7 +73,6 @@ function setupSocketHandlers(io) {
         }
 
       } catch (error) {
-        console.error('Erro ao sair da sala:', error);
       }
     });
     socket.on('send_message', async ({ roomId, content }) => {
@@ -86,6 +81,18 @@ function setupSocketHandlers(io) {
           socket.emit('error', { message: 'Mensagem vazia' });
           return;
         }
+
+        if (content.length > 2000) {
+          socket.emit('error', { message: 'Mensagem muito longa' });
+          return;
+        }
+
+        const userInfo = roomManager.getUserInfo(socket.id);
+        if (!userInfo || userInfo.currentRoomId !== roomId) {
+          socket.emit('error', { message: 'Você não está nesta sala' });
+          return;
+        }
+
         const message = await prisma.message.create({
           data: {
             content: content.trim(),
@@ -99,13 +106,11 @@ function setupSocketHandlers(io) {
           }
         });
 
-        console.log(`💬 ${socket.username} → ${roomId}: ${content.substring(0, 30)}...`);
         io.to(roomId).emit('receive_message', message);
         roomManager.stopTyping(socket.id, roomId, socket.username);
         io.to(roomId).emit('user_stop_typing', { username: socket.username });
 
       } catch (error) {
-        console.error('Erro ao enviar mensagem:', error);
         socket.emit('error', { message: 'Erro ao enviar mensagem' });
       }
     });
@@ -116,7 +121,6 @@ function setupSocketHandlers(io) {
           username: socket.username 
         });
       } catch (error) {
-        console.error('Erro no typing_start:', error);
       }
     });
     socket.on('typing_stop', ({ roomId }) => {
@@ -126,12 +130,9 @@ function setupSocketHandlers(io) {
           username: socket.username 
         });
       } catch (error) {
-        console.error('Erro no typing_stop:', error);
       }
     });
     socket.on('disconnect', () => {
-      console.log(`❌ Usuário desconectado: ${socket.username} (${socket.id})`);
-
       const result = roomManager.leaveCurrentRoom(socket.id);
       
       if (result) {

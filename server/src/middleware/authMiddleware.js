@@ -34,7 +34,6 @@ const authMiddleware = (req, res, next) => {
     });
 
   } catch (error) {
-    console.error('Erro no middleware de autenticação:', error);
     return res.status(401).json({ 
       error: 'Falha na autenticação' 
     });

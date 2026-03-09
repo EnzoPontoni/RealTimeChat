@@ -15,7 +15,6 @@ const getAllRooms = async (req, res) => {
     res.json({ rooms });
 
   } catch (error) {
-    console.error('Erro ao buscar salas:', error);
     res.status(500).json({ 
       error: 'Erro ao buscar salas' 
     });
@@ -43,7 +42,6 @@ const getRoomById = async (req, res) => {
     res.json({ room });
 
   } catch (error) {
-    console.error('Erro ao buscar sala:', error);
     res.status(500).json({ 
       error: 'Erro ao buscar sala' 
     });
@@ -57,7 +55,17 @@ const createRoom = async (req, res) => {
         error: 'Nome da sala é obrigatório' 
       });
     }
-    const existingRoom = await prisma.room.findUnique({
+    if (name.trim().length > 50) {
+      return res.status(400).json({ 
+        error: 'Nome da sala muito longo (m\u00e1ximo 50 caracteres)' 
+      });
+    }
+
+    if (description && description.length > 200) {
+      return res.status(400).json({ 
+        error: 'Descri\u00e7\u00e3o muito longa (m\u00e1ximo 200 caracteres)' 
+      });
+    }    const existingRoom = await prisma.room.findUnique({
       where: { name: name.trim() }
     });
 
@@ -76,7 +84,6 @@ const createRoom = async (req, res) => {
     res.status(201).json({ room });
 
   } catch (error) {
-    console.error('Erro ao criar sala:', error);
     res.status(500).json({ 
       error: 'Erro ao criar sala' 
     });
@@ -97,7 +104,6 @@ const deleteRoom = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erro ao deletar sala:', error);
     res.status(500).json({ 
       error: 'Erro ao deletar sala' 
     });

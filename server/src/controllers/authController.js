@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../utils/prisma');
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -10,9 +13,21 @@ const register = async (req, res) => {
       });
     }
 
-    if (password.length < 6) {
+    if (typeof username !== 'string' || username.length < 3 || username.length > 30) {
       return res.status(400).json({ 
-        error: 'A senha deve ter pelo menos 6 caracteres' 
+        error: 'Username deve ter entre 3 e 30 caracteres' 
+      });
+    }
+
+    if (typeof email !== 'string' || !EMAIL_REGEX.test(email) || email.length > 255) {
+      return res.status(400).json({ 
+        error: 'Email inválido' 
+      });
+    }
+
+    if (typeof password !== 'string' || password.length < 6 || password.length > 128) {
+      return res.status(400).json({ 
+        error: 'A senha deve ter entre 6 e 128 caracteres' 
       });
     }
     const existingUser = await prisma.user.findFirst({
@@ -55,7 +70,7 @@ const register = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erro ao registrar:', error);
+
     res.status(500).json({ 
       error: 'Erro ao criar usuário' 
     });
@@ -102,7 +117,6 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erro ao fazer login:', error);
     res.status(500).json({ 
       error: 'Erro ao fazer login' 
     });
@@ -129,7 +143,7 @@ const verifyToken = async (req, res) => {
     res.json({ user });
 
   } catch (error) {
-    console.error('Erro ao verificar token:', error);
+
     res.status(500).json({ 
       error: 'Erro ao verificar autenticação' 
     });

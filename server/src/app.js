@@ -3,6 +3,12 @@ const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+if (!process.env.JWT_SECRET) {
+  process.exit(1);
+}
 
 const authRoutes = require('./routes/authRoutes');
 const roomRoutes = require('./routes/roomRoutes');
@@ -47,14 +53,30 @@ const io = new Server(httpServer, {
   cors: corsOptions
 });
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-if (process.env.NODE_ENV !== 'production') {
-  app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
-    next();
-  });
-}
+app.use(helmet());
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: 'Muitas tentativas. Tente novamente em 15 minutos.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  message: { error: 'Limite de requisições excedido.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+app.use('/api', apiLimiter);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/messages', messageRoutes);
@@ -78,30 +100,18 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Rota não encontrada' });
 });
 app.use((err, req, res, next) => {
-  console.error('Erro interno:', err);
   res.status(500).json({ 
-    error: 'Erro interno do servidor',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined
+    error: 'Erro interno do servidor'
   });
 });
 const PORT = process.env.PORT || 3001;
 
 httpServer.listen(PORT, () => {
-  console.log(`
-╔════════════════════════════════════════╗
-║   🚀 Real-Time Chat Server             ║
-║   ✅ Server running on port ${PORT}      ║
-║   🌍 Environment: ${process.env.NODE_ENV || 'development'}        ║
-║   📡 Socket.io ready                   ║
-╚════════════════════════════════════════╝
-  `);
 });
-process.on('unhandledRejection', (error) => {
-  console.error('❌ Unhandled Rejection:', error);
+process.on('unhandledRejection', () => {
 });
 
-process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught Exception:', error);
+process.on('uncaughtException', () => {
   process.exit(1);
 });
 

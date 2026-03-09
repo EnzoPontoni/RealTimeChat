@@ -39,22 +39,18 @@ export const SocketProvider = ({ children }) => {
       reconnectionDelay: 1000,
     });
     newSocket.on('connect', () => {
-      console.log('✅ Socket conectado:', newSocket.id);
       setConnected(true);
     });
 
     newSocket.on('disconnect', (reason) => {
-      console.log('❌ Socket desconectado:', reason);
       setConnected(false);
     });
 
     newSocket.on('connect_error', (error) => {
-      console.error('❌ Erro de conexão Socket:', error.message);
       setConnected(false);
     });
 
     newSocket.on('error', (error) => {
-      console.error('❌ Erro do Socket:', error);
     });
 
     setSocket(newSocket);
