@@ -49,9 +49,7 @@ if (fs.existsSync('server/.env')) {
     }
   });
   if (serverEnv.includes('DATABASE_URL')) {
-    if (serverEnv.includes('postgres://c21c7d3f038722b9467612bab53cd0e7c7b5c28f255906834292bc8d35d56a99')) {
-      console.log('   ✅ DATABASE_URL do Prisma Database configurado');
-    } else if (serverEnv.includes('postgresql://')) {
+    if (serverEnv.includes('postgres://') || serverEnv.includes('postgresql://')) {
       console.log('   ✅ DATABASE_URL personalizado configurado');
     } else {
       console.log('   ⚠️  DATABASE_URL pode estar incorreto');
