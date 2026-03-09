@@ -32,12 +32,18 @@ const allowedOrigins = parsedClientOrigins.length > 0
   ? parsedClientOrigins
   : DEFAULT_CLIENT_ORIGINS;
 
+const VERCEL_PROJECT_ORIGIN_REGEX = /^https:\/\/pontonichats(?:-[a-z0-9-]+)?\.vercel\.app$/i;
+
 const corsOriginValidator = (origin, callback) => {
   if (!origin) {
     return callback(null, true);
   }
 
   if (allowedOrigins.includes(origin)) {
+    return callback(null, true);
+  }
+
+  if (VERCEL_PROJECT_ORIGIN_REGEX.test(origin)) {
     return callback(null, true);
   }
 
